@@ -135,24 +135,17 @@ function mostrarMapaPlantilla($mapa){
         echo "<br>";
     }
 }
-function corralesAfectadas($mapa,$casillas){
-    $filaAfectada = [];
-    $columnaAfectada = [];
-    for ($i=0; $i < count($casillas) ; $i++) { 
-        $filaAfectada[] = $casillas[$i][0];
-        $columnaAfectada[] = $casillas[$i][1];
-    }
-    for ($i=0; $i < count($mapa) ; $i++) { 
-        for ($j=0; $j < count($mapa[$i]) ; $j++) {
-            for ($x = 0; $x < count($filaAfectada); $x++){
-                if ($filaAfectada[$x] == $i && $columnaAfectada[$x] == $j&&$mapa[$i][$j] == "C"){ 
-                    $mapa[$i][$j] = "Q";
-                }
+function corralesAfectadas($mapa, $casillas) {
+    for ($i = 0; $i < count($casillas); $i++) {
+        $fila = $casillas[$i][0];
+        $columna = $casillas[$i][1];
+            if ($mapa[$fila][$columna] === 'C') {
+                $mapa[$fila][$columna] = 'Q';
             }
-        }
     }
-    return $mapa; 
+    return $mapa;
 }
+
 function calcuarDesodorante($mapa){
     $contador = 0;
     for ($i=0; $i <count($mapa) ; $i++) { 
@@ -170,28 +163,20 @@ function calcuarDesodorante($mapa){
     return $array;
 }
 function zonasAfectadas($mapa,$casillas){
-    $filaAfectada = [];
-    $columnaAfectada = [];
-    for ($i=0; $i < count($casillas) ; $i++) { 
-        $filaAfectada[] = $casillas[$i][0];
-        $columnaAfectada[] = $casillas[$i][1];
-    }
-    for ($i=0; $i < count($mapa) ; $i++) { 
-        for ($j=0; $j < count($mapa[$i]) ; $j++) {
-            for ($x = 0; $x < count($filaAfectada); $x++){
-                if ($filaAfectada[$x] == $i && $columnaAfectada[$x] == $j&&$mapa[$i][$j] == "C"){ 
-                    $mapa[$i][$j] = "Q";
-                }
-                elseif ($filaAfectada[$x] == $i && $columnaAfectada[$x] == $j&&$mapa[$i][$j] == "0"){ 
-                    $mapa[$i][$j] = "X";
-                }
-                elseif ($filaAfectada[$x] == $i && $columnaAfectada[$x] == $j&&$mapa[$i][$j] == "~"){ 
-                    $mapa[$i][$j] = "S";
-                }
+    for ($i = 0; $i < count($casillas); $i++) {
+        $fila = $casillas[$i][0];
+        $columna = $casillas[$i][1];
+            if ($mapa[$fila][$columna] === 'C') {
+                $mapa[$fila][$columna] = 'Q';
             }
-        }
+            elseif ($mapa[$fila][$columna] === '0') {
+                $mapa[$fila][$columna] = 'X';
+            }
+            elseif ($mapa[$fila][$columna] === '~') {
+                $mapa[$fila][$columna] = 'S';
+            }
     }
-    return $mapa; 
+    return $mapa;
 }
 function calcularDanos($mapa){
     $contador = 0;
@@ -245,17 +230,20 @@ function calcularBeneficio($recaudado,$gasto){
 function formatearNumero($num){
     return number_format($num,0,',','.');
 }
-echo "🌌 Mapa	original	de	Capra	Majoris<br>"; mostrarMapaPlantilla($capraMajoris);
+echo "🌌 Mapa	original	de	Capra	Majoris<br>";
+mostrarMapaPlantilla($capraMajoris);
 $mapaAfectados = corralesAfectadas($capraMajoris,$impacts);
-echo "<br><br><br>💥 Corrales	quesificados<br>"; mostrarMapaPlantilla($mapaAfectados);
+
+echo "<br><br><br>💥 Corrales	quesificados<br>";
+mostrarMapaPlantilla($mapaAfectados);
 $arrayCabrasDesodorante = calcuarDesodorante($mapaAfectados);
-echo "🐐 Cabras	afectadas: ".formatearNumero($arrayCabrasDesodorante[0]) ."<br>"."🥛 Litros	de	desodorante	anticheddar: " .  formatearNumero($arrayCabrasDesodorante[1]) ." L<br><br><br>";
+echo "🐐 Cabras	afectadas: <strong>".formatearNumero($arrayCabrasDesodorante[0]) ."</strong><br>"."🥛 Litros	de	desodorante	anticheddar: <strong>" .  formatearNumero($arrayCabrasDesodorante[1]) ." L </strong><br><br><br>";
 $mapaAfectadosTodos = zonasAfectadas($capraMajoris,$impacts);
 echo "<br>🔧 Mapa	de	daños	totales<br>"; mostrarMapaPlantilla($mapaAfectadosTodos);
-$dineroDanos = calcularDanos($mapaAfectadosTodos); echo "💸 Coste	total	de	limpieza: ".formatearNumero($dineroDanos)." €<br>";
+$dineroDanos = calcularDanos($mapaAfectadosTodos); echo "💸 Coste	total	de	limpieza: <strong>".formatearNumero($dineroDanos)." €</strong><br>";
 $totalAtmosferaLimpia = calcularAtomosefraLimpia($mapaAfectadosTodos);
 $totalAtmosferaAfectada = calcularAtomosefraAfectada($mapaAfectadosTodos);
 $totalAtmosfera = $totalAtmosferaAfectada + $totalAtmosferaLimpia;
-$recaudacionONG = calcularRecaudacionONG($totalAtmosferaAfectada,$totalAtmosfera); echo "🐟 Recaudación	ONG	Cocineros	Cósmicos: " .formatearNumero($recaudacionONG)." €<br>";
-$beneficio = calcularBeneficio($recaudacionONG , $dineroDanos);echo "🧾 Daños	netos	estimados: " . formatearNumero($beneficio)." €";
+$recaudacionONG = calcularRecaudacionONG($totalAtmosferaAfectada,$totalAtmosfera); echo "🐟 Recaudación	ONG	Cocineros	Cósmicos: <strong>" .formatearNumero($recaudacionONG)." €</strong><br>";
+$beneficio = calcularBeneficio($recaudacionONG , $dineroDanos);echo "🧾 Daños	netos	estimados: <strong>" . formatearNumero($beneficio)."</strong> €";
 ?>
